@@ -57,18 +57,16 @@ public class MatchSetupManager : MonoBehaviour
         {
             int initialisedCards = 0;
             char cardValue = POSSIBLE_CHARS[Random.Range(0, 25)];
-            Debug.Log(i.ToString());
             while (initialisedCards < 2)
             {
                 int randomCard = Random.Range(0, _numberOfCards);
                 Card currentCard = _cards[randomCard];
-                Debug.Log(currentCard.FaceValue);
                 if (currentCard.FaceValue == "" && initialisedCards < 2)
                 {
                     currentCard.FaceValue = cardValue.ToString();
+                    StartCoroutine(SetFaceValueWithDelay(currentCard, cardValue.ToString(), 1f));
                     initialisedCards++;
                 }
-
             }
         }
     }
