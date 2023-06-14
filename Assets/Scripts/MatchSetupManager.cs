@@ -10,6 +10,8 @@ public class MatchSetupManager : MonoBehaviour
     private GameObject _cardPrefab;
     [SerializeField]
     private int _numberOfCards;
+    [SerializeField]
+    private LevelTimer _levelTimer;
 
     private List<Card> _cards = new List<Card>();
     private float _currentOffset = 0f;
@@ -22,6 +24,8 @@ public class MatchSetupManager : MonoBehaviour
         {
             _numberOfCards++;
         }
+
+        CardComparer.Instance.MaxMatches = _numberOfCards/2;
 
         SetCards();
     }
@@ -69,6 +73,10 @@ public class MatchSetupManager : MonoBehaviour
                 }
             }
         }
+
+        CardComparer.Instance.ResetMatches();
+        _levelTimer.StopTimer();
+        _levelTimer.ResetTimer();
     }
 
     IEnumerator SetFaceValueWithDelay(Card card, string value, float delay)
