@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class Card : MonoBehaviour
 {
+    public string FaceValue;
+
     private CardComparer _cardComparer;
     private TMP_Text _faceText;
-    [SerializeField]
-    private string _faceValue;
     private bool _isSelectable = true;
 
     void Awake()
@@ -16,14 +16,14 @@ public class Card : MonoBehaviour
 
     void Start()
     {
-        _faceText.text = _faceValue;
+        _faceText.text = FaceValue;
         _cardComparer = CardComparer.Instance;
     }
 
 
     public void OnMouseDown()
     {
-        if (_isSelectable)
+        if (_isSelectable && !_cardComparer.IsComparisonInProgress)
         {
             _cardComparer.SubmitCard(this);
 
@@ -33,7 +33,7 @@ public class Card : MonoBehaviour
 
     public string GetCardValue()
     {
-        return _faceValue;
+        return FaceValue;
     }
 
     public void ShowCard()
