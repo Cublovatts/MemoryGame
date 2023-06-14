@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ public class MatchSetupManager : MonoBehaviour
     [SerializeField]
     private int _numberOfCards;
 
+    private List<Card> _cards = new List<Card>();
     private float _currentOffset = 0f;
     private float _offset = 3f;
 
@@ -21,30 +23,56 @@ public class MatchSetupManager : MonoBehaviour
             _numberOfCards++;
         }
 
-        List<Card> uninitialisedCards = new List<Card>();
+        SetCards();
+    }
 
-        for (int i=0; i<_numberOfCards; i++)
+    [ContextMenu("Set Cards")]
+    public void SetCards()
+    {
+        _currentOffset = 0f;
+        if (_cards.Count == 0)
         {
-            GameObject newCard = Instantiate(_cardPrefab, gameObject.transform);
-            newCard.transform.Translate(new Vector3(_currentOffset, 0, 0));
-            _currentOffset += _offset;
-            uninitialisedCards.Add(newCard.GetComponent<Card>());
+            for (int i = 0; i < _numberOfCards; i++)
+            {
+                GameObject newCard = Instantiate(_cardPrefab, gameObject.transform);
+                newCard.transform.Translate(new Vector3(_currentOffset, 0, 0));
+                _currentOffset += _offset;
+                _cards.Add(GetComponentInChildren<Card>());
+            }
+        } else
+        {
+            foreach (Card card in _cards)
+            {
+                card.SetFaceValue("");
+            }
         }
 
-        for (int i=0; i<_numberOfCards/2; i++)
+        foreach (Card card in _cards)
+        {
+            card.HideCard();
+        }
+
+        for (int i = 0; i < _numberOfCards / 2; i++)
         {
             int initialisedCards = 0;
             char cardValue = POSSIBLE_CHARS[Random.Range(0, 25)];
             while (initialisedCards < 2)
             {
                 int randomCard = Random.Range(0, _numberOfCards);
-                Card currentCard = uninitialisedCards[randomCard];
+                Card currentCard = _cards[randomCard];
                 if (currentCard.FaceValue == "")
                 {
-                    currentCard.FaceValue = cardValue.ToString();
+                    currentCard.SetFaceValue(cardValue.ToString());
+                    currentCard.HideCard();
                     initialisedCards++;
                 }
             }
         }
+    }
+
+    IEnumerator SetFaceValueWithDelay(Card card, string value, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        card.SetFaceValue(value);
     }
 }

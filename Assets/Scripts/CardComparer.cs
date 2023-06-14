@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class CardComparer : MonoBehaviour
@@ -5,12 +6,17 @@ public class CardComparer : MonoBehaviour
     public static CardComparer Instance;
     public bool IsComparisonInProgress = false;
 
+    [SerializeField]
+    private AudioClip _matchSound;
+
+    private AudioSource _audioSource;
     private Card _previouslySelectedCard;
     private Card _currentlySelectedCard;
     
     private void Awake()
     {
         Instance = this;
+        _audioSource = GetComponent<AudioSource>();
     }
 
     public void SubmitCard(Card card)
@@ -29,6 +35,7 @@ public class CardComparer : MonoBehaviour
             _previouslySelectedCard = null;
             _currentlySelectedCard = null;
             IsComparisonInProgress = false;
+            StartCoroutine(playSoundWithDelay(_matchSound, 0.5f));
         } else
         {
             // The cards don't match, flip them both back
@@ -44,5 +51,11 @@ public class CardComparer : MonoBehaviour
         _previouslySelectedCard = null;
         _currentlySelectedCard = null;
         IsComparisonInProgress = false;
-    } 
+    }
+
+    IEnumerator playSoundWithDelay(AudioClip clip, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        _audioSource.PlayOneShot(clip);
+    }
 }
