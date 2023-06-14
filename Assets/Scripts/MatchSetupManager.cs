@@ -37,7 +37,8 @@ public class MatchSetupManager : MonoBehaviour
                 GameObject newCard = Instantiate(_cardPrefab, gameObject.transform);
                 newCard.transform.Translate(new Vector3(_currentOffset, 0, 0));
                 _currentOffset += _offset;
-                _cards.Add(GetComponentInChildren<Card>());
+
+                _cards.Add(newCard.GetComponentInChildren<Card>());
             }
         } else
         {
@@ -52,20 +53,22 @@ public class MatchSetupManager : MonoBehaviour
             card.HideCard();
         }
 
-        for (int i = 0; i < _numberOfCards / 2; i++)
+        for (int i=0; i<_numberOfCards/2; i++)
         {
             int initialisedCards = 0;
             char cardValue = POSSIBLE_CHARS[Random.Range(0, 25)];
+            Debug.Log(i.ToString());
             while (initialisedCards < 2)
             {
                 int randomCard = Random.Range(0, _numberOfCards);
                 Card currentCard = _cards[randomCard];
-                if (currentCard.FaceValue == "")
+                Debug.Log(currentCard.FaceValue);
+                if (currentCard.FaceValue == "" && initialisedCards < 2)
                 {
-                    currentCard.SetFaceValue(cardValue.ToString());
-                    currentCard.HideCard();
+                    currentCard.FaceValue = cardValue.ToString();
                     initialisedCards++;
                 }
+
             }
         }
     }
